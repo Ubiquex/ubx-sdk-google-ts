@@ -112,6 +112,8 @@ export interface BackendService_LogConfig {
   optionalFields: string[];
   optionalMode: string;
   sampleRate: number;
+  requestHeaders: BackendService_CdnPolicy_BypassCacheOnRequestHeaders[];
+  responseHeaders: BackendService_CdnPolicy_BypassCacheOnRequestHeaders[];
 }
 
 export interface BackendService_MaxStreamDuration {
@@ -310,6 +312,16 @@ const BackendService_LogConfigFields: FieldMap = {
   optionalFields: "optional_fields",
   optionalMode: "optional_mode",
   sampleRate: "sample_rate",
+  requestHeaders: {
+    wireName: "request_headers",
+    kind: "list",
+    fields: BackendService_CdnPolicy_BypassCacheOnRequestHeadersFields,
+  },
+  responseHeaders: {
+    wireName: "response_headers",
+    kind: "list",
+    fields: BackendService_CdnPolicy_BypassCacheOnRequestHeadersFields,
+  },
 };
 
 const BackendService_MaxStreamDurationFields: FieldMap = {
