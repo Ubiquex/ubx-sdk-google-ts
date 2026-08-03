@@ -36,6 +36,11 @@ export interface ArmorTemplate_FilterConfig {
   sdpSettings: ArmorTemplate_FilterConfig_SdpSettings[];
 }
 
+export interface ArmorTemplate_TemplateMetadata_FilterVersionSelector {
+  alias: string;
+  version: string;
+}
+
 export interface ArmorTemplate_TemplateMetadata_MultiLanguageDetection {
   enableMultiLanguageDetection: boolean;
 }
@@ -49,6 +54,7 @@ export interface ArmorTemplate_TemplateMetadata {
   ignorePartialInvocationFailures: boolean;
   logSanitizeOperations: boolean;
   logTemplateOperations: boolean;
+  filterVersionSelector: ArmorTemplate_TemplateMetadata_FilterVersionSelector[];
   multiLanguageDetection: ArmorTemplate_TemplateMetadata_MultiLanguageDetection[];
 }
 
@@ -121,6 +127,11 @@ const ArmorTemplate_FilterConfigFields: FieldMap = {
   },
 };
 
+const ArmorTemplate_TemplateMetadata_FilterVersionSelectorFields: FieldMap = {
+  alias: "alias",
+  version: "version",
+};
+
 const ArmorTemplate_TemplateMetadata_MultiLanguageDetectionFields: FieldMap = {
   enableMultiLanguageDetection: "enable_multi_language_detection",
 };
@@ -134,6 +145,11 @@ const ArmorTemplate_TemplateMetadataFields: FieldMap = {
   ignorePartialInvocationFailures: "ignore_partial_invocation_failures",
   logSanitizeOperations: "log_sanitize_operations",
   logTemplateOperations: "log_template_operations",
+  filterVersionSelector: {
+    wireName: "filter_version_selector",
+    kind: "list",
+    fields: ArmorTemplate_TemplateMetadata_FilterVersionSelectorFields,
+  },
   multiLanguageDetection: {
     wireName: "multi_language_detection",
     kind: "list",

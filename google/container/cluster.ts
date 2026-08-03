@@ -39,6 +39,7 @@ export interface Cluster_AddonsConfig {
   httpLoadBalancing: Cluster_AddonsConfig_HorizontalPodAutoscaling[];
   lustreCsiDriverConfig: Cluster_AddonsConfig_LustreCsiDriverConfig[];
   networkPolicyConfig: Cluster_AddonsConfig_HorizontalPodAutoscaling[];
+  nodeReadinessConfig: Cluster_AddonsConfig_AgentSandboxConfig[];
   parallelstoreCsiDriverConfig: Cluster_AddonsConfig_AgentSandboxConfig[];
   podSnapshotConfig: Cluster_AddonsConfig_AgentSandboxConfig[];
   rayOperatorConfig: Cluster_AddonsConfig_RayOperatorConfig[];
@@ -771,6 +772,10 @@ export interface Cluster_ResourceUsageExportConfig {
   bigqueryDestination: Cluster_ResourceUsageExportConfig_BigqueryDestination[];
 }
 
+export interface Cluster_RollbackSafeUpgrade {
+  controlPlaneSoakDuration: string;
+}
+
 export interface Cluster_SecretManagerConfig_RotationConfig {
   enabled: boolean;
   rotationInterval: string;
@@ -902,6 +907,11 @@ const Cluster_AddonsConfigFields: FieldMap = {
     wireName: "network_policy_config",
     kind: "list",
     fields: Cluster_AddonsConfig_HorizontalPodAutoscalingFields,
+  },
+  nodeReadinessConfig: {
+    wireName: "node_readiness_config",
+    kind: "list",
+    fields: Cluster_AddonsConfig_AgentSandboxConfigFields,
   },
   parallelstoreCsiDriverConfig: {
     wireName: "parallelstore_csi_driver_config",
@@ -2087,6 +2097,10 @@ const Cluster_ResourceUsageExportConfigFields: FieldMap = {
   },
 };
 
+const Cluster_RollbackSafeUpgradeFields: FieldMap = {
+  controlPlaneSoakDuration: "control_plane_soak_duration",
+};
+
 const Cluster_SecretManagerConfig_RotationConfigFields: FieldMap = {
   enabled: "enabled",
   rotationInterval: "rotation_interval",
@@ -2139,6 +2153,7 @@ export interface ClusterConfig {
   deletionPolicy?: string | Computed<string>;
   deletionProtection?: boolean | Computed<boolean>;
   description?: string | Computed<string>;
+  desiredEmulatedVersion?: string | Computed<string>;
   disableL4LbFirewallReconciliation?: boolean | Computed<boolean>;
   enableAutopilot?: boolean | Computed<boolean>;
   enableCiliumClusterwideNetworkPolicy?: boolean | Computed<boolean>;
@@ -2207,6 +2222,7 @@ export interface ClusterConfig {
   rbacBindingConfig?: Cluster_RbacBindingConfig[] | Computed<Cluster_RbacBindingConfig[]>;
   releaseChannel?: Cluster_GatewayApiConfig[] | Computed<Cluster_GatewayApiConfig[]>;
   resourceUsageExportConfig?: Cluster_ResourceUsageExportConfig[] | Computed<Cluster_ResourceUsageExportConfig[]>;
+  rollbackSafeUpgrade?: Cluster_RollbackSafeUpgrade[] | Computed<Cluster_RollbackSafeUpgrade[]>;
   secretManagerConfig?: Cluster_SecretManagerConfig[] | Computed<Cluster_SecretManagerConfig[]>;
   secretSyncConfig?: Cluster_SecretManagerConfig[] | Computed<Cluster_SecretManagerConfig[]>;
   securityPostureConfig?: Cluster_SecurityPostureConfig[] | Computed<Cluster_SecurityPostureConfig[]>;
@@ -2227,8 +2243,10 @@ export interface ClusterAttrs {
   deletionPolicy: string;
   deletionProtection: boolean;
   description: string;
+  desiredEmulatedVersion: string;
   disableL4LbFirewallReconciliation: boolean;
   effectiveLabels: Record<string, string>;
+  emulatedVersion: string;
   enableAutopilot: boolean;
   enableCiliumClusterwideNetworkPolicy: boolean;
   enableFqdnNetworkPolicy: boolean;
@@ -2304,6 +2322,7 @@ export interface ClusterAttrs {
   rbacBindingConfig: Cluster_RbacBindingConfig[];
   releaseChannel: Cluster_GatewayApiConfig[];
   resourceUsageExportConfig: Cluster_ResourceUsageExportConfig[];
+  rollbackSafeUpgrade: Cluster_RollbackSafeUpgrade[];
   secretManagerConfig: Cluster_SecretManagerConfig[];
   secretSyncConfig: Cluster_SecretManagerConfig[];
   securityPostureConfig: Cluster_SecurityPostureConfig[];
@@ -2326,6 +2345,7 @@ export const Cluster: ResourceBinding<ClusterConfig, ClusterAttrs> = {
     deletionPolicy: "deletion_policy",
     deletionProtection: "deletion_protection",
     description: "description",
+    desiredEmulatedVersion: "desired_emulated_version",
     disableL4LbFirewallReconciliation: "disable_l4_lb_firewall_reconciliation",
     enableAutopilot: "enable_autopilot",
     enableCiliumClusterwideNetworkPolicy: "enable_cilium_clusterwide_network_policy",
@@ -2545,6 +2565,11 @@ export const Cluster: ResourceBinding<ClusterConfig, ClusterAttrs> = {
       wireName: "resource_usage_export_config",
       kind: "list",
       fields: Cluster_ResourceUsageExportConfigFields,
+    },
+    rollbackSafeUpgrade: {
+      wireName: "rollback_safe_upgrade",
+      kind: "list",
+      fields: Cluster_RollbackSafeUpgradeFields,
     },
     secretManagerConfig: {
       wireName: "secret_manager_config",
