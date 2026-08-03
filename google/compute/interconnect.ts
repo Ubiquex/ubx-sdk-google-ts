@@ -95,6 +95,7 @@ export interface InterconnectAttrs {
   deletionPolicy: string;
   description: string;
   effectiveLabels: Record<string, string>;
+  effectiveLocation: string;
   expectedOutages: Interconnect_ExpectedOutages[];
   googleIpAddress: string;
   googleReferenceId: string;
