@@ -452,8 +452,6 @@ export interface RunV2JobConfig {
   location: string | Computed<string>;
   name: string | Computed<string>;
   project?: string | Computed<string>;
-  runExecutionToken?: string | Computed<string>;
-  startExecutionToken?: string | Computed<string>;
   tags?: Record<string, string> | Computed<Record<string, string>>;
   binaryAuthorization?: RunV2Job_BinaryAuthorization[] | Computed<RunV2Job_BinaryAuthorization[]>;
   template?: RunV2Job_Template[] | Computed<RunV2Job_Template[]>;
@@ -486,8 +484,6 @@ export interface RunV2JobAttrs {
   observedGeneration: string;
   project: string;
   reconciling: boolean;
-  runExecutionToken: string;
-  startExecutionToken: string;
   tags: Record<string, string>;
   terminalCondition: RunV2Job_Conditions[];
   terraformLabels: Record<string, string>;
@@ -512,8 +508,6 @@ export const RunV2Job: ResourceBinding<RunV2JobConfig, RunV2JobAttrs> = {
     location: "location",
     name: "name",
     project: "project",
-    runExecutionToken: "run_execution_token",
-    startExecutionToken: "start_execution_token",
     tags: "tags",
     binaryAuthorization: {
       wireName: "binary_authorization",

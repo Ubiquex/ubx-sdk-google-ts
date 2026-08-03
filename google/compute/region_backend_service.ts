@@ -112,17 +112,11 @@ export interface RegionBackendService_Iap {
   oauth2ClientSecretSha256: string;
 }
 
-export interface RegionBackendService_LogConfig_RequestHeaders {
-  headerName: string;
-}
-
 export interface RegionBackendService_LogConfig {
   enable: boolean;
   optionalFields: string[];
   optionalMode: string;
   sampleRate: number;
-  requestHeaders: RegionBackendService_LogConfig_RequestHeaders[];
-  responseHeaders: RegionBackendService_LogConfig_RequestHeaders[];
 }
 
 export interface RegionBackendService_NetworkPassThroughLbTrafficPolicy_ZonalAffinity {
@@ -308,25 +302,11 @@ const RegionBackendService_IapFields: FieldMap = {
   oauth2ClientSecretSha256: "oauth2_client_secret_sha256",
 };
 
-const RegionBackendService_LogConfig_RequestHeadersFields: FieldMap = {
-  headerName: "header_name",
-};
-
 const RegionBackendService_LogConfigFields: FieldMap = {
   enable: "enable",
   optionalFields: "optional_fields",
   optionalMode: "optional_mode",
   sampleRate: "sample_rate",
-  requestHeaders: {
-    wireName: "request_headers",
-    kind: "list",
-    fields: RegionBackendService_LogConfig_RequestHeadersFields,
-  },
-  responseHeaders: {
-    wireName: "response_headers",
-    kind: "list",
-    fields: RegionBackendService_LogConfig_RequestHeadersFields,
-  },
 };
 
 const RegionBackendService_NetworkPassThroughLbTrafficPolicy_ZonalAffinityFields: FieldMap = {
