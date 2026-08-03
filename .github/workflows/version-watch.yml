@@ -7,10 +7,11 @@ name: version-watch
 #
 # Ported from ubx-sdk-aws-ts's own proven version-watch.yml -- same
 # registry-call shape (just a different provider), same $RUNNER_TEMP
-# scratch-isolation, same vendor/deno.json exclusion from the regen
-# diff (this repo's own @ubx/sdk is vendored, not published -- UBI-109
-# re-checked `npm view @ubx/sdk` live before assuming anything changed
-# since UBI-104; still 404, still unpublished).
+# scratch-isolation. `@ubx/sdk` (the shared TS runtime) is a real
+# published dependency -- jsr:@ubx/sdk (UBI-110; previously vendored
+# into vendor/ubx-sdk-runtime/ as a stopgap while unpublished, UBI-109)
+# -- deno.json/deno.lock are hand/tooling-maintained, not codegen
+# output, so they're excluded from the regeneration diff.
 
 on:
   schedule:
@@ -127,14 +128,15 @@ jobs:
           # `--out` writes a repo-shaped tree under <out>/<lang>/<source>;
           # flatten it back to this repo's own root, matching the initial
           # commit's own layout (package.json, google/ namespace directory
-          # per UBI-106, at the repo root). deno.json/vendor/ are excluded
-          # deliberately: `ubx sdk gen` never generates either (this
-          # repo's own @ubx/sdk vendoring + import map are hand-maintained,
-          # not codegen output) -- without this exclusion, rsync --delete
-          # would silently wipe both every run.
+          # per UBI-106, at the repo root). deno.json/deno.lock are
+          # excluded deliberately: `ubx sdk gen` never generates either
+          # (this repo's own @ubx/sdk import map and its resolved-version
+          # lock are hand/tooling-maintained, not codegen output) --
+          # without this exclusion, rsync --delete would silently wipe
+          # both every run.
           rsync -a --delete \
             --exclude='.git' --exclude='.github' --exclude='VERSION' --exclude='README.md' \
-            --exclude='deno.json' --exclude='vendor' \
+            --exclude='deno.json' --exclude='deno.lock' \
             "$gendir/out/ts/hashicorp-google/" ./
           echo "${{ steps.registry.outputs.latest }}" > VERSION
 
@@ -143,10 +145,21 @@ jobs:
         run: |
           set -euo pipefail
           # Matches this project's own real TS tooling (deno.json tasks
-          # throughout sdk/ts/), not tsc. --no-remote confirms the vendored
-          # @ubx/sdk import map resolves fully offline, no network calls.
-          find . -name "*.ts" -not -path "./vendor/*" -print0 \
-            | xargs -0 deno check --no-remote
+          # throughout sdk/ts/), not tsc. `@ubx/sdk` is a real jsr:
+          # dependency (UBI-110) -- `--no-remote` structurally refuses to
+          # resolve ANY remote specifier (jsr:/https:), cache or lockfile
+          # notwithstanding (confirmed directly against ubx-sdk-aws-ts:
+          # even a warm cache + --frozen lockfile still gets "A remote
+          # specifier was requested ... but --no-remote is specified"),
+          # so it can never pass against a jsr: import map -- unlike the
+          # old vendored local-path import, which was a plain file
+          # specifier and trivially satisfied --no-remote. `deno cache`
+          # (network, warms the lockfile/module cache) followed by
+          # `deno check --frozen` (cache-only from here; fails if the
+          # lockfile would need to change) is the real offline-safe
+          # equivalent.
+          find . -name "*.ts" -print0 | xargs -0 deno cache
+          find . -name "*.ts" -print0 | xargs -0 deno check --frozen
 
       - name: Open PR
         if: steps.compare.outputs.newer == 'true'

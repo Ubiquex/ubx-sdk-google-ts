@@ -17,15 +17,19 @@ was last generated from is tracked in `VERSION`, not `.ubx/config.hcl` —
 this repo carries no ubx stack/config of its own, only generated
 bindings.
 
-**Shared runtime (`@ubx/sdk`)**: same as `ubx-sdk-aws-ts`, vendored
-directly into this repo at `vendor/ubx-sdk-runtime/` rather than
-published to npm — `@ubx/sdk` is still unpublished as of this repo's
-own creation (re-checked live, not assumed). `deno.json`'s own import
-map points `@ubx/sdk` at the vendored copy; resolution works fully
-offline (`deno check --no-remote`). See
-[UBI-107](https://github.com/ubiquex/ubiquex) in the `ubiquex` repo's
-own issue tracker for the real npm-publish follow-up that would let
-this (and its AWS sibling) depend on a real published package instead.
+**Shared runtime (`@ubx/sdk`)**: same as `ubx-sdk-aws-ts`, a real
+dependency — [`jsr:@ubx/sdk`](https://jsr.io/@ubx/sdk), published on
+JSR (Deno's own registry), not vendored. `deno.json`'s import map
+resolves `@ubx/sdk` to `jsr:@ubx/sdk@^0.1.0`; `deno.lock` pins the exact
+resolved version. This repo previously vendored the runtime at
+`vendor/ubx-sdk-runtime/` as a stopgap while `@ubx/sdk` was unpublished
+(UBI-109); UBI-110 removed the vendored copy once the real JSR
+dependency was confirmed to resolve. Note: because JSR imports are
+genuinely remote, `deno check --no-remote` no longer applies (Deno's
+`--no-remote` refuses to resolve *any* remote specifier, cache or
+lockfile notwithstanding) — CI instead runs `deno cache` (network)
+followed by `deno check --frozen` (cache-only, fails if the lockfile
+would need to change).
 
 Every file under a service directory except `doc.ts` is generated —
 do not hand-edit; re-run `ubx sdk gen` (or wait for the automated PR)
