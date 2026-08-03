@@ -128,7 +128,6 @@ export interface AiEndpointWithModelGardenDeployment_ModelConfig {
 export interface AiEndpointWithModelGardenDeployment_Timeouts {
   create: string;
   delete: string;
-  update: string;
 }
 
 const AiEndpointWithModelGardenDeployment_DeployConfig_DedicatedResources_AutoscalingMetricSpecsFields: FieldMap = {
@@ -330,7 +329,6 @@ const AiEndpointWithModelGardenDeployment_ModelConfigFields: FieldMap = {
 const AiEndpointWithModelGardenDeployment_TimeoutsFields: FieldMap = {
   create: "create",
   delete: "delete",
-  update: "update",
 };
 
 export interface AiEndpointWithModelGardenDeploymentConfig {
