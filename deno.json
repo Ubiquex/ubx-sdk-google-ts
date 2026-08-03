@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "@ubx/sdk": "./vendor/ubx-sdk-runtime/index.ts"
+  }
+}
